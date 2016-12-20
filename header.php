@@ -93,6 +93,15 @@
 			font-size:24px;
 			cursor:pointer;
 		}
+		.info_key{
+			font-weight: bold;
+			font-size: 16px;
+			margin-bottom: 10px;
+		}
+		.info_value{
+			width: 100%;
+			margin-bottom: 20px;
+		}
 		</style>
 
 		<script>

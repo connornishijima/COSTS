@@ -4,17 +4,6 @@
 
     $server_ip = $_SERVER['SERVER_ADDR'];
     $product_id = $_GET["product_id"];
-    $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
-    $data = explode("\n",$data);
-    foreach($data as $line){
-        $line = explode("%|%",$line);
-        $nick = $line[0];
-        $pid = $line[1];
-        if($pid == $product_id){
-            $product_nick = $nick;
-        }
-    }
 
 ?>
 
@@ -43,6 +32,7 @@
 </div>
 
 <script>
+	window["product_nick"] = "";
 	window["asking"] = 0;
 	fetch_info();
 
@@ -55,7 +45,7 @@
 		}
 		var reason = $("#reason").val();
 		var sale_info = "funds="+funds+"&reason="+reason;
-		$.getJSON( "http://<?php echo $server_ip;?>:8080/<?php echo $product_nick;?>/add_funds/"+sale_info, function(data){
+		$.getJSON( "http://<?php echo $server_ip;?>:8080/"+window["product_nick"]+"/add_funds/"+sale_info, function(data){
 			if(data["status"] == "success"){
 				if(adding == true){
         	        finish("product_view.php","Income added successfully!","alert-success");
@@ -72,6 +62,7 @@
 			for(x in data["products"]){
 				var product_info = data["products"][x];
 				if(product_info["ID"] == <?php echo json_encode($product_id);?>){
+					window["product_nick"] = product_info["nick"];
 					render_product(product_info);
 				}
 			}

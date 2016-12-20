@@ -90,34 +90,46 @@ def adjust_funds(product_id,data):
 
         return make_response(jsonify({"status":"success"}),200)
 
-@app.route('/<product_id>/adjust_stock/<data>', methods = ['GET'])
-def adjust_stock(product_id,data):
-        output = url2json(data)
+@app.route('/<product_id>/adjust_information/<data>', methods = ['GET'])
+def adjust_information(product_id,data):
+	output = url2json(data)
 
-        product = {}
+	with open(home+"/costs/products/"+product_id+"/product_info.json","r") as f:
+		product = json.loads(f.read())
 
-        for ID in output:
-                onhand = output[ID]
+	product["name"] = output["name"]
+	product["desc"] = output["desc"]
+	product["asking_price"] = float(output["asking_price"])
+	product["minimum_units"] = int(output["minimum_units"])
 
-                with open(home+"/costs/products/"+product_id+"/product_info.json","r") as f:
-                        product = json.loads(f.read())
+	with open(home+"/costs/products/"+product_id+"/product_info.json","w") as f:
+		f.write(json.dumps(product,sort_keys=True,indent=2))
 
-                index = 0
-                found = 0
-                for part in product["parts"]:
-                        if part["ID"] == ID:
-                                found = index
-                        index+=1
+	return make_response(jsonify({"status":"success"}),200)
 
-                product["parts"][found]["onhand"] = int(onhand)
-                print product["parts"][found]["onhand"]
+@app.route('/<product_nick>/adjust_stock/<data>', methods = ['GET'])
+def adjust_stock(product_nick,data):
+	output = url2json(data)
 
-                with open(home+"/costs/products/"+product_id+"/product_info.json","w") as f:
-                        f.write(json.dumps(product,sort_keys=True,indent=2))
+	with open(home+"/costs/products/"+product_nick+"/product_info.json","r") as f:
+		product = json.loads(f.read())
 
-        add_history(product_id,"ADJUST","Manual Inventory Adjustment","0.00");
+	for key_x in output:
+		part_id = key_x.split("+")[0]
+		key_y = key_x.split("+")[1]
+		val_y = output[key_x]
+		print part_id,key_y,val_y
 
-        return make_response(jsonify({"status":"success"}),200)
+		index = 0
+		for part in product["parts"]:
+			if part["ID"] == part_id:
+				product["parts"][index][key_y] = val_y
+			index+=1
+
+	with open(home+"/costs/products/"+product_nick+"/product_info.json","w") as f:
+		f.write(json.dumps(product,sort_keys=True,indent=2))
+			
+	return make_response(jsonify({"status":"success"}),200)
 
 @app.route('/<product_id>/add_order/<data>', methods = ['GET'])
 def add_order(product_id,data):
@@ -268,9 +280,9 @@ def add_funds(product_id,data):
 
         return make_response(jsonify({"status":"success"}),200)
 
-@app.route('/<product_id>/remove_part/<part_id>', methods = ['GET'])
-def remove_part(product_id,part_id):
-        with open(home+"/costs/products/"+product_id+"/product_info.json","r") as f:
+@app.route('/<product_nick>/remove_part/<part_id>', methods = ['GET'])
+def remove_part(product_nick,part_id):
+        with open(home+"/costs/products/"+product_nick+"/product_info.json","r") as f:
                 product = json.loads(f.read())
 
         part_found = False
@@ -289,7 +301,7 @@ def remove_part(product_id,part_id):
                 del product["parts"][part_index]
                 print json.dumps(product,sort_keys=True,indent=2)
 
-                with open(home+"/costs/products/"+product_id+"/product_info.json","w") as f:
+                with open(home+"/costs/products/"+product_nick+"/product_info.json","w") as f:
                         f.write(json.dumps(product,sort_keys=True,indent=2))
 
                 return make_response(jsonify({"status":"success"}),200)

@@ -4,17 +4,6 @@
 
     $server_ip = $_SERVER['SERVER_ADDR'];
     $product_id = $_GET["product_id"];
-    $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
-    $data = explode("\n",$data);
-    foreach($data as $line){
-        $line = explode("%|%",$line);
-        $nick = $line[0];
-        $pid = $line[1];
-        if($pid == $product_id){
-            $product_nick = $nick;
-        }
-    }
 ?>
 
 <a href="products.php">PRODUCTS</a> > <a class="postlink" href="product_view.php?product_id=<?php echo $product_id;?>" id="bread_name">NAME</a> > ADD SALE<br><br>
@@ -40,6 +29,7 @@
 </div>
 
 <script>
+	window["product_nick"] = "";
 	window["asking"] = 0;
 	fetch_info();
 
@@ -47,7 +37,7 @@
 		var units_sold = $("#units_in_sale").val();
 		var profits = units_sold*window["asking"].toFixed(2);
 		var sale_info = "profits="+profits+"&units="+units_sold;
-		$.getJSON( "http://<?php echo $server_ip;?>:8080/<?php echo $product_nick;?>/add_sale/"+sale_info, function(data){
+		$.getJSON( "http://<?php echo $server_ip;?>:8080/"+window["product_nick"]+"/add_sale/"+sale_info, function(data){
 			if(data["status"] == "success"){
                 finish("product_view.php","Sale added successfully!","alert-success");
             }
@@ -60,6 +50,7 @@
 			for(x in data["products"]){
 				var product_info = data["products"][x];
 				if(product_info["ID"] == <?php echo json_encode($product_id);?>){
+					window["product_nick"] = product_info["nick"];
 					render_product(product_info);
 				}
 			}

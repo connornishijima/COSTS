@@ -7,21 +7,6 @@
 	if(isset($_GET["product_id"])){
     	$product_id = $_GET["product_id"];
 	}
-	else{
-    	$product_id = $_GET["product_id"];
-	}
-
-    $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
-    $data = explode("\n",$data);
-    foreach($data as $line){
-        $line = explode("%|%",$line);
-        $nick = $line[0];
-        $pid = $line[1];
-        if($pid == $product_id){
-            $product_nick = $nick;
-        }
-    }
 ?>
 
 <div id="warnings">
@@ -132,6 +117,7 @@
 	</ul>
 	
 
+<!------
 	<h3>TOP LINKS</h3>
 	<div id="links_list">
 		Top links are grabbed every 15 minutes - check back soon!
@@ -147,6 +133,7 @@
 	<ul class="nav nav-list">
   	<li class="divider"></li>
 	</ul>
+-----!>
 
 	<h3>HISTORY</h3>
 	<div id="history_list">
@@ -186,6 +173,7 @@
 </div>
 
 <script>
+	window["product_nick"] = "";
 	fetch_products();
 	fetch_links();
 	fetch_history();
@@ -195,6 +183,7 @@
 			for(x in data["products"]){
 				var product_info = data["products"][x];
 				if(product_info["ID"] == <?php echo json_encode($product_id);?>){
+					window["product_nick"] = product_info["nick"];
 					render_product(product_info);
 				}
 			}

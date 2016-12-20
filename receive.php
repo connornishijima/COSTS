@@ -3,20 +3,7 @@
 	include("header.php");
 
     $server_ip = $_SERVER['SERVER_ADDR'];
-
     $product_id = $_GET["product_id"];
-
-    $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
-    $data = explode("\n",$data);
-    foreach($data as $line){
-        $line = explode("%|%",$line);
-        $nick = $line[0];
-        $pid = $line[1];
-        if($pid == $product_id){
-            $product_nick = $nick;
-        }
-    }
 ?>
 
 <a href="products.php">PRODUCTS</a> > <a class="postlink" href="product_view.php?product_id=<?php echo $product_id;?>" id="bread_name">NAME</a> > RECEIVING<br><br>
@@ -26,6 +13,7 @@
 <button onclick="receive_order();">RECEIVE ORDER</button>
 
 <script>
+	window["product_nick"] = "";
 	window["profit_per"] = 0;
 	window["parts_list"] = [];
 	window["current_funds"] = 0;
@@ -85,7 +73,7 @@
 		}
 		console.log(order_info);
 
-		$.getJSON( "http://<?php echo $server_ip;?>:8080/<?php echo $product_nick;?>/receive_order/"+order_info.substring(0, order_info.length - 1), function(data){
+		$.getJSON( "http://<?php echo $server_ip;?>:8080/"+window["product_nick"]+"/receive_order/"+order_info.substring(0, order_info.length - 1), function(data){
 			if(data["status"] == "success"){
 				finish("product_view.php","Order received successfully!","alert-success");
 			}
@@ -97,6 +85,7 @@
 			for(x in data["products"]){
 				var product_info = data["products"][x];
 				if(product_info["ID"] == <?php echo json_encode($product_id);?>){
+					window["product_nick"] = product_info["nick"];
 					render_product(product_info);
 				}
 			}

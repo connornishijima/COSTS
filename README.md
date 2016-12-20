@@ -16,7 +16,7 @@ Connor's Open Stock Tracking System ("COSTS" for short) is a solution I wrote as
 
 Here is our bill of materials with pricing for a decent-sized order:
 
-| **PART NAME**    | **NEEDED PER** | **ORDER COST** | **ORDER QUANTITY** | **SHIPPING COST** |
+|  **PART NAME**   | **NEEDED PER** | **ORDER COST** | **ORDER QUANTITY** | **SHIPPING COST** |
 |------------------|----------------|----------------|--------------------|-------------------|
 | 1000uF Capacitor | 1              | $12.63         | 100                | $3.40             |
 | WS2812B          | 9              | $59.76         | 1000               | $20.14            |

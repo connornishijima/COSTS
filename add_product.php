@@ -4,17 +4,6 @@
 
     $server_ip = $_SERVER['SERVER_ADDR'];
     $product_id = $_GET["product_id"];
-    $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
-    $data = explode("\n",$data);
-    foreach($data as $line){
-        $line = explode("%|%",$line);
-        $nick = $line[0];
-        $pid = $line[1];
-        if($pid == $product_id){
-            $product_nick = $nick;
-        }
-    }
 ?>
 
 <a href="products.php">PRODUCTS</a> > <a class="postlink" href="add_product.php" id="bread_name"> ADD PRODUCT</a><br><br>

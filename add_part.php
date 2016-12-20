@@ -4,17 +4,6 @@
 
     $server_ip = $_SERVER['SERVER_ADDR'];
     $product_id = $_GET["product_id"];
-    $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
-    $data = explode("\n",$data);
-    foreach($data as $line){
-        $line = explode("%|%",$line);
-        $nick = $line[0];
-        $pid = $line[1];
-        if($pid == $product_id){
-            $product_nick = $nick;
-        }
-    }
 ?>
 
 <a href="products.php">PRODUCTS</a> > <a class="postlink" href="product_view.php?product_id=<?php echo $product_id;?>" id="bread_name">NAME</a> > ADD PART<br><br>
@@ -61,6 +50,7 @@
 <button onclick="add_part();">ADD PART</button>
 
 <script>
+	window["product_nick"] = "";
 	fetch_info();
 
 	function add_part(){
@@ -68,7 +58,8 @@
         var params = ""
         var info_provided = true;
         for(x in param_list){
-            params = params+param_list[x]+"="+encodeURI($("#"+param_list[x]).val())+"&";
+            var param = param_list[x]+"="+encodeURIComponent($("#"+param_list[x]).val())+"&";
+            params += param.replace("http://","").replace("https://","");
             if($("#"+param_list[x]).val() == ""){
                 info_provided = false;
             }
@@ -86,6 +77,7 @@
             for(x in data["products"]){
                 var product_info = data["products"][x];
                 if(product_info["ID"] == <?php echo json_encode($product_id);?>){
+					window["product_nick"] = product_info["nick"];
                     render_product(product_info);
                 }
             }
