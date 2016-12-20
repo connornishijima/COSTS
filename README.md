@@ -21,3 +21,11 @@ Here is our bill of materials with pricing for a decent-sized order:
 | WS2812B          | 9              | $59.76         | 1000               | $20.14            |
 | PCB              | 1              | $69.90         | 200                | $28.11            |
 | ESP-12E          | 1              | $105.80        | 50                 | $0.00             |
+
+From this, we can calculate the cost to produce each unit, and how many we will have available after this order is arrived and assembled.
+
+**1000uF Capacitor**: ((order_cost + shipping_cost) / order_quantity) * needed_per = **$0.16**
+**WS2812B**: ((order_cost + shipping_cost) / order_quantity) * needed_per = **$0.72**
+*Etc...*
+
+By summing these items together, we get the cost to produce our product: $3.32
