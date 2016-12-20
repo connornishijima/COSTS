@@ -313,14 +313,17 @@ def get_links(product_id):
 
 @app.route('/products', methods = ['GET'])
 def get_products():
-        products = getProductList()
-        product_list = []
-        print products
-        for product in products:
-                with open(home+"/costs/products/"+product+"/product_info.json","r") as f:
-                        data = json.loads(f.read())
-                product_list.append(data)
-        return make_response(jsonify({"products":product_list}),200)
+	products = getProductList()
+	product_list = []
+	print products
+	for product in products:
+		try:
+			with open(home+"/costs/products/"+product+"/product_info.json","r") as f:
+				data = json.loads(f.read())
+				product_list.append(data)
+		except IOError:
+			pass # not a directory
+	return make_response(jsonify({"products":product_list}),200)
 
 @app.route('/mirror/<path:path>')
 def send_static(path):

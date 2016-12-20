@@ -5,7 +5,7 @@
     $server_ip = $_SERVER['SERVER_ADDR'];
     $product_id = $_GET["product_id"];
     $product_nick = "null";
-    $data = file_get_contents("product_index.lst");
+    $data = file_get_contents("/root/costs/products/product_index.lst");
     $data = explode("\n",$data);
     foreach($data as $line){
         $line = explode("%|%",$line);
