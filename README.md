@@ -30,4 +30,5 @@ From this, we can calculate the cost to produce each unit, and how many we will 
 
 *Etc...*
 
-By summing these items together, we get the cost to produce our product: $3.32
+By summing these items together, we get the cost to produce our product:
+# $3.32
