@@ -4,8 +4,9 @@ Connor's Open Stock Tracking System!
 ----------
 # Disclaimer
 
+- COSTS is still being documented, so for now this repo is useless to most other people until I write an installer for all the packages.
 - This software was written with none of the care I normally take to optimize code. It's ugly.
-- I'm not the hippest Python developer.
+- I'm not the hippest Python developer. It's 2.7, not 3.
 - I wrote this for personal use only, but I'm putting it out there to see if anyone finds it useful.
 
 ----------
