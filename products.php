@@ -7,6 +7,7 @@
 
 <div id="product_list">
 </div>
+<a href="add_product.php">ADD PRODUCT</a>
 <script>
 	function load_product(id){
 		var form = document.createElement("form");

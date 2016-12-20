@@ -30,6 +30,44 @@ def url2json(data):
 
 #////////////////////////////////////////////////
 
+@app.route('/add_product/<data>', methods = ['GET'])
+def add_product(data):
+        output = url2json(data)
+        print output
+
+	product = {
+		"ID":str(uuid.uuid4()),
+		"asking_price":float(output["price"]),
+		"assembled":0,
+		"desc":output["desc"],
+		"funds":{
+			"bottom":0,
+			"current":float(output["funds"]),
+			"earned":0,
+			"invested":0,
+			"units_sold":0
+		},
+		"minimum_units":int(output["units"]),
+		"name":output["name"],
+		"nick":output["name"].lower().replace(" ","_"),
+		"parts":[],
+	}
+
+	directory = home+"/costs/products/"+product["nick"]
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+		with open(directory+"/product_info.json","w+") as f:
+			f.write(json.dumps(product,indent=2))
+		with open("product_index.lst","a+") as f:
+			f.write(product["nick"]+"%|%"+product["ID"]+"\n")
+		with open(directory+"/history.lst","w+") as f:
+			newline = current_time()+" %|% INFO %|% Added Product %|% 0.00\n"
+			f.write(newline)
+
+	        return make_response(jsonify({"status":"success"}),200)
+	else:
+	        return make_response(jsonify({"status":"exists"}),400)
+
 @app.route('/<product_id>/adjust_funds/<data>', methods = ['GET'])
 def adjust_funds(product_id,data):
         output = url2json(data)
@@ -138,26 +176,33 @@ def receive_order(product_id,data):
 
 @app.route('/<product_id>/add_part/<data>', methods = ['GET'])
 def add_part(product_id,data):
-        output = url2json(data)
+	output = url2json(data)
 
-        part = {}
-        part["ID"] = str(uuid.uuid4())
+	part = {}
+	part["ID"] = str(uuid.uuid4())
 
-        for item in output:
-                part[item] = output[item]
+	part["needed_per"] = int(output["needed_per"])
+	part["order_quantity"] = int(output["order_quantity"])
+	part["order_cost"] = float(output["order_cost"])
+	part["shipping_cost"] = float(output["shipping_cost"])
+	part["onhand"] = 0
+	part["incoming"] = 0
+	part["link"] = output["link"]
+	part["name"] = output["name"]
+	part["desc"] = output["desc"]
 
-        print data
-        print json.dumps(part,indent=2)
+	with open(home+"/costs/products/"+product_id_to_nick(product_id)+"/product_info.json","r") as f:
+		product = json.loads(f.read())
 
-        with open(home+"/costs/products/"+product_id+"/product_info.json","r") as f:
-                product = json.loads(f.read())
+	print data
+	print json.dumps(part,indent=2)
 
-        product["parts"].append(part)
+	product["parts"].append(part)
 
-        with open(home+"/costs/products/"+product_id+"/product_info.json","w") as f:
-                f.write(json.dumps(product,sort_keys=True,indent=2))
+	with open(home+"/costs/products/"+product_id_to_nick(product_id)+"/product_info.json","w") as f:
+		f.write(json.dumps(product,sort_keys=True,indent=2))
 
-        return make_response(jsonify({"status":"success"}),200)
+	return make_response(jsonify({"status":"success"}),200)
 
 @app.route('/<product_id>/add_sale/<data>', methods = ['GET'])
 def add_sale(product_id,data):

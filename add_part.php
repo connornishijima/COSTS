@@ -1,51 +1,107 @@
 <?php
+	$active = "products";
+	include("header.php");
+
     $server_ip = $_SERVER['SERVER_ADDR'];
     $product_id = $_GET["product_id"];
-	$product_nick = "null";
-	$data = file_get_contents("product_index.lst");
-	$data = explode("\n",$data);
-	foreach($data as $line){
-		$line = explode("%|%",$line);
-		$nick = $line[0];
-		$pid = $line[1];
-		if($pid == $product_id){
-			$product_nick = $nick;
-		}
-	}
+    $product_nick = "null";
+    $data = file_get_contents("product_index.lst");
+    $data = explode("\n",$data);
+    foreach($data as $line){
+        $line = explode("%|%",$line);
+        $nick = $line[0];
+        $pid = $line[1];
+        if($pid == $product_id){
+            $product_nick = $nick;
+        }
+    }
 ?>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<a href="products.php">PRODUCTS</a> > <a class="postlink" href="product_view.php?product_id=<?php echo $product_id;?>" id="bread_name">NAME</a> > ADD PART<br><br>
+<div id="product_name_whole"><div id="product_name"></div> | ADD PART</div><br><br>
 
-<a href="product_view.php?product_id=<?php echo $product_id;?>">GO BACK</a><br>
+<div class="row">
+    <div class="span6">
+        <h4>Name</h4>
+        <input type="textbox" id="name" style="width: 100%;" placeholder="What part is this?" />
+    </div>
+    <div class="span6">
+        <h4>Description</h4>
+        <input type="textbox" id="desc" style="width: 100%;" placeholder="Give a short description of the part" />
+    </div>
+</div>
+<div class="row">
+    <div class="span6">
+        <h4>Order Cost ($)</h4>
+        <input type="textbox" id="order_cost" style="width: 100%;" placeholder="How much does one order of this part cost? ($69.00)" />
+    </div>
+    <div class="span6">
+        <h4>Order Quantity</h4>
+        <input type="textbox" id="order_quantity" style="width: 100%;" placeholder="How many of this part comes in one order?" />
+    </div>
+</div>
+<div class="row">
+    <div class="span6">
+        <h4>Shipping Cost ($)</h4>
+        <input type="textbox" id="shipping_cost" style="width: 100%;" placeholder="How much is shipping for this order?" />
+    </div>
+    <div class="span6">
+        <h4>Needed Per</h4>
+        <input type="textbox" id="needed_per" style="width: 100%;" placeholder="How many of these are in a single finished product?" />
+    </div>
+</div>
+<div class="row">
+    <div class="span12">
+        <h4>Order Link</h4>
+        <input type="textbox" id="link" style="width: 100%;" placeholder="Where can you buy this product?" />
+    </div>
+</div>
 
-Name: <input type="textbox" id="name" /><br>
-Description: <input type="textbox" id="desc" /><br>
 <br>
-Quantity per product: <input type="textbox" id="needed_per" /><br>
-Order quantity: <input type="textbox" id="order_quantity" /><br>
-Order cost: <input type="textbox" id="order_cost" /><br>
-Shipping cost: <input type="textbox" id="shipping_cost" /><br>
-<input type="hidden" id="onhand" value="0">
-<button onclick="addPart();">ADD PART</button>
+<button onclick="add_part();">ADD PART</button>
 
 <script>
-	function addPart(){
-		var param_list = ["name","desc","needed_per","order_quantity","order_cost","shipping_cost","onhand"];
-		var params = ""
-		var info_provided = true;
-		for(x in param_list){
-			params = params+param_list[x]+"="+encodeURI($("#"+param_list[x]).val())+"&";
-			if($("#"+param_list[x]).val() == ""){
-				info_provided = false;
+	fetch_info();
+
+	function add_part(){
+		var param_list = ["name","desc","needed_per","order_quantity","order_cost","shipping_cost","link"];
+        var params = ""
+        var info_provided = true;
+        for(x in param_list){
+            params = params+param_list[x]+"="+encodeURI($("#"+param_list[x]).val())+"&";
+            if($("#"+param_list[x]).val() == ""){
+                info_provided = false;
+            }
+        }
+		console.log(params);
+		$.getJSON( "http://<?php echo $server_ip;?>:8080/<?php echo $product_id;?>/add_part/"+params.substring(0, params.length - 1), function( data ) {
+			if(data["status"] == "success"){
+				finish("edit.php","Part added successfully!","alert-success");
 			}
-		}
-		if(info_provided == true){
-			$.getJSON( "http://<?php echo $server_ip;?>/<?php echo $product_nick;?>/add_part/"+params.substring(0, params.length - 1), function( data ) {
-				alert(data["status"]);
-			});
-		}
-		else{
-			alert("MISSING INFO");
-		}
+		});
 	}
+
+	function fetch_info(){
+        $.getJSON( "http://<?php echo $server_ip;?>:8080/products", function( data ) {
+            for(x in data["products"]){
+                var product_info = data["products"][x];
+                if(product_info["ID"] == <?php echo json_encode($product_id);?>){
+                    render_product(product_info);
+                }
+            }
+        });
+    }
+
+    function render_product(info){
+        $("#product_name").html(info["name"]);
+        $("#bread_name").html(info["name"].toUpperCase());
+    }
+
+
+	function finish(link,m,t){
+        $.redirectPost(link, {product_id: "<?php echo $product_id;?>", message: m, message_type: t});
+    }
+
 </script>
+
+<?php include("footer.php");?>

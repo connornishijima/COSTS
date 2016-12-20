@@ -38,7 +38,7 @@
 	<a class="postlink" href="add_assembly.php?product_id=<?php echo $product_id;?>"><button type="button" class="btn btn">Assembly</button></a>
 	<a class="postlink" href="add_sale.php?product_id=<?php echo $product_id;?>"><button type="button" class="btn btn">Sale</button></a>
 	<a class="postlink" href="add_funds.php?product_id=<?php echo $product_id;?>"><button type="button" class="btn btn">Income / Expenditure</button></a>
-	<a class="postlink" href="adjust.php?product_id=<?php echo $product_id;?>"><button type="button" class="btn">Adjust</button></a>
+	<a class="postlink" href="edit.php?product_id=<?php echo $product_id;?>"><button type="button" class="btn">Edit</button></a>
 	<br>
 	<br>
 	
@@ -326,6 +326,9 @@
 				minimum = makes;
 			}
 
+		}
+		if(minimum == 99999999){ // If no units waiting...
+			minimum = 0;
 		}
 
 		html +=	'</table>';
