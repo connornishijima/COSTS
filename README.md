@@ -4,7 +4,7 @@ Connor's Open Stock Tracking System!
 ----------
 # Disclaimer
 
-- This software was written with none of the care I normally take to optimize code.
+- This software was written with none of the care I normally take to optimize code. It's ugly.
 - I'm not the hippest Python developer.
 - I wrote this for personal use only, but I'm putting it out there to see if anyone finds it useful.
 
