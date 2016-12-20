@@ -25,7 +25,9 @@ Here is our bill of materials with pricing for a decent-sized order:
 From this, we can calculate the cost to produce each unit, and how many we will have available after this order is arrived and assembled.
 
 **1000uF Capacitor**: ((order_cost + shipping_cost) / order_quantity) * needed_per = **$0.16**
+
 **WS2812B**: ((order_cost + shipping_cost) / order_quantity) * needed_per = **$0.72**
+
 *Etc...*
 
 By summing these items together, we get the cost to produce our product: $3.32
